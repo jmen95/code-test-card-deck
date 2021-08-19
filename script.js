@@ -220,12 +220,54 @@ class DrawCard {
   hasValidParams() {
     return !!Object.keys(this.params).length;
   }
+
+  filterByCards() {
+    if (this.params.cards) this.deck.filter("id", this.params.cards);
+  }
+
+  filterBySuits() {
+    if (this.params.suits) this.deck.filter("suit", this.params.suits);
+  }
+
+  filterByRanks() {
+    if (this.params.ranks) this.deck.filter("rank", this.params.ranks);
+  }
+
+  limit() {
+    if (this.params.limit && parseInt(this.params.limit, 10))
+      this.deck.limit(parseInt(this.params.limit, 10));
+  }
+
+  sort() {
+    const { sorted } = this.params;
+    if (sorted?.toLowerCase() === "asc") {
+      this.deck.sort();
+    } else if (sorted?.toLowerCase() === "desc") {
+      this.deck.sort();
+      this.deck.possibleCards.reverse();
+    }
+  }
+
+  /**
+   * Draw cards from URL Params
+   */
+  drawFromParams() {
+    if (this.hasValidParams()) {
+      this.filterByCards();
+      this.filterBySuits();
+      this.filterByRanks();
+      this.limit();
+      this.sort();
+      this.deck.drawFiltered();
+    }
+  }
 }
 
 // Create a new card deck.
 const deck = new CardDeck(".deck", ".hand");
 
 const drawCard = new DrawCard(deck);
+drawCard.drawFromParams();
 
 // Take a look at the deck object and its methods.
 console.log(deck);
