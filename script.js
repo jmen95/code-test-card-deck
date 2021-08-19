@@ -218,7 +218,7 @@ class DrawCard {
    * @returns
    */
   hasValidParams() {
-    return !!Object.keys(this.params).length;
+    return Object.keys(this.params).length > 0;
   }
 
   filterByCards() {
@@ -230,7 +230,12 @@ class DrawCard {
   }
 
   filterByRanks() {
-    if (this.params.ranks) this.deck.filter("rank", this.params.ranks);
+    if (this.params.ranks) {
+      const parsedRanks = this.params.ranks
+        .map((rank) => parseInt(rank, 10))
+        .filter((rank) => !!rank);
+      if (parsedRanks.length) this.deck.filter("rank", parsedRanks);
+    }
   }
 
   limit() {
